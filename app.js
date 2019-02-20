@@ -27,7 +27,6 @@ global.Config = require('./config.js');
 if (!Config.username) throw new Error("Please specify a username in config.js");
 
 global.Commands = require('./commands.js');
-global.BackupCommands = require('./backup-commands.js');
 
 global.Rooms = require('./rooms.js').Rooms;
 
