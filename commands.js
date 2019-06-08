@@ -196,6 +196,78 @@ let commands = {
 			var rand = questions[Math.floor(Math.random() * questions.length)];
 			this.say(rand);
 	},
+	
+	convert: function (target, room, user){
+		if (!user.hasRank(room, '+') && !(room instanceof Users.User) && !user.isDeveloper()) return;
+		var first = target.split(",")[0].toLowerCase();
+		var second = target.split(",")[1].toLowerCase().trim();
+
+		if (first.includes("c")) {
+			var celsius = parseInt(first);
+			if (celsius < (-273.15)) {
+				room.say('Temperature is below absolute zero (−273.15°C).');
+				return;
+			}
+			if (second.includes("c")) {
+				room.say(celsius+"º Celsius = "+celsius+"º Celsius.");
+				return;
+			}
+			if (second.includes("f")) {
+				var f = celsius * 9 / 5 + 32;
+				f = Math.round(f * 100) / 100;
+				room.say(celsius+"º Celsius = "+f+"º Fahrenheit.");
+				return;
+			}
+			if (second.includes("k")) {
+				room.say(celsius+"º Celsius = "+Math.floor(100*(celsius+273.15))/100+"º Kelvin.");
+				return;
+			}
+		}
+		if (first.includes("f")) {
+			var f = parseInt(first);
+			if (f < (-450)) {
+				room.say('Temperature is below absolute zero (−450°F).');
+				return;
+			}
+			if (second.includes("f")) {
+				room.say(f+"º Fahrenheit = "+f+"º Fahrenheit.");
+				return;
+			}
+			if (second.includes("c")) {
+				var celsius = (f-32) * 5 / 9;
+				celsius = Math.round(celsius * 100) / 100;
+				room.say(f+"º Fahrenheit = "+celsius+"º Celsius.");
+				return;
+			}
+			if (second.includes("k")) {
+				var k = (f-32) * 5 / 9 +273.15;
+				k = Math.round(k * 100) / 100;
+				room.say(f+"º Fahrenheit = "+(k)+"º Kelvin.");
+				return;
+			}
+		}
+		if (first.includes("k")) {
+			var k = parseInt(first);
+			if (k < (0)) {
+				room.say('Temperature is below absolute zero (0°K).');
+				return;
+			}
+			if (second.includes("k")) {
+				room.say(k+"º Kelvin = "+k+"º Kelvin.");
+				return;
+			}
+			if (second.includes("c")) {
+				room.say(k+"º Kelvin = "+Math.floor((k-273.15)*100)/100+"º Celsius.");
+				return;
+			}
+			if (second.includes("f")) {
+				var f = (k-273.15-32)*5/9;
+				f = Math.round(f * 100) / 100;
+				room.say(k+"º Kelvin = "+(f)+"º Fahrenheit.");
+				return;
+			}
+		}
+	},
 
 
 };
