@@ -10,9 +10,9 @@
 'use strict';
 
 // The username and password that Cassius will use to login
-exports.username = 'fart';
+exports.username = 'fartbot';
 // leave this blank if the username is unregistered
-exports.password = 'Gary was here! This password is a loser!';
+exports.password = 'pachinko';
 
 // The server address to which Cassius will connect
 exports.server = '';
