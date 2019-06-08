@@ -537,6 +537,14 @@ class MessageParser {
 			punishments.push({action: 'ban', rule: 'filter', reason: 'filter evasion'});
 		}
 		
+		if (global.banwords[room.id]) {
+			var str = message.split(' ').join('').replace(/[.]/g, '');
+			str = str.toLowerCase().replace('niger', ''); // avoid false positives
+			if (homoglyphSearch.search(str, global.banwords[room.id]).length > 0) {
+				punishments.push({action: 'ban', rule: 'filter', reason: 'said a banned word'});
+			}
+		}
+		
 		var highlights = 0;
 		Object.keys(global.online_auth).forEach(function(id) {
 			if (message.includes(id) || message.includes(global.online_auth[id])) {
