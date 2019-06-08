@@ -26,11 +26,11 @@ exports.guide = '';
 // Rooms that Cassius will attempt to join after logging in
 // example: exports.rooms = ['room1', 'room2', 'room3'];
 /**@type {Array<string>} */
-exports.rooms = [ 'dreamyard', 'lobby'];
+exports.rooms = ['lobby'];
 
 // Rooms where scripted games are enabled
 /**@type {Array<string>} */
-exports.games = ['dreamyard'];
+exports.games = [];
 
 // Rooms where scripted tournaments are enabled
 /**@type {Array<string>} */
