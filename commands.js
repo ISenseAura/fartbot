@@ -180,7 +180,6 @@ let commands = {
 		} else {return this.say("This message is not being repeated!");}
 	},
 	
-	
 	randtopic: function (target, room, user) {
 		if (!(room instanceof Users.User) && !user.hasRank(room, '+')) return;
 		var pokemonA = require('pokemon-random')();
@@ -302,7 +301,96 @@ let commands = {
                 })();
 	},
 	
-	
+	banword: function(target, room, user) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '@') && !user.isDeveloper()) return;
+		if (room instanceof Users.User) {
+			var res = target.split("|");
+			if (res.length === 1) {
+				this.say("Format: ~banword room|WORD");
+			} else {
+				var roomid = res[0].toLowerCase().replace(/\s/g, '');
+				var roomobj = Rooms.rooms[roomid];
+				if (!user.hasRank(roomobj, '@') && !user.isDeveloper()) {
+					this.say("Insufficient privileges.");
+					return;
+				}
+				let msg = res[1];
+				let database = Storage.getDatabase(roomid);
+				if (!(database.banwords)) {
+					database["banwords"] = [msg];
+					global.banwords[roomid] = [msg];
+				} else {
+					var r = database["banwords"];
+					r.push(msg);
+					database["banwords"] = r;
+					global.banwords[roomid] = r;
+				}
+				Storage.exportDatabase(roomid);
+				this.say("Banword added in "+roomid+".");
+				Client.send(roomid+"|/modnote BANWORD ("+msg+") added by "+user.name);
+			}
+		} else {
+			let msg = res[1];
+			let database = Storage.getDatabase(room.id);
+			if (!(database.banwords)) {
+				database["banwords"] = [msg];
+				global.banwords[roomid] = [msg];
+			} else {
+				var r = database["banwords"];
+				r.push(msg);
+				database["banwords"] = r;
+				global.banwords[roomid] = r;
+			}
+			Storage.exportDatabase(room.id);
+			this.say("Banword added.");
+			Client.send(room.id+"|/modnote BANWORD ("+msg+") added by "+user.name);
+		}
+	},
+
+	removebanword: "deletebanword",
+	deletebanword: function(target, room, user) {
+		if (!(room instanceof Users.User) && !user.hasRank(room, '@') && !user.isDeveloper()) return;
+		if (room instanceof Users.User) {
+			var res = target.split("|");
+			if (res.length === 1) {
+				this.say("Format: ~deletebanword room|WORD");
+			} else {
+				var roomid = res[0].toLowerCase().replace(/\s/g, '');
+				var roomobj = Rooms.rooms[roomid];
+				if (!user.hasRank(roomobj, '@') && !user.isDeveloper()) {
+					this.say("Insufficient privileges.");
+					return;
+				}
+				let msg = res[1];
+				let database = Storage.getDatabase(roomid);
+				if (!(database.banwords)) {
+					return this.say("There are no banwords in "+roomid);
+				} else {
+					var r = database["banwords"];
+					r.remByVal(msg);
+					database["banwords"] = r;
+					global.banwords[roomid] = r;
+				}
+				Storage.exportDatabase(roomid);
+				this.say("Banword removed from "+roomid+".");
+				Client.send(roomid+"|/modnote BANWORD ("+msg+") removed by "+user.name);
+			}
+		} else {
+			let msg = res[1];
+			let database = Storage.getDatabase(room.id);
+			if (!(database.banwords)) {
+				return this.say("There are no banwords in "+roomid);
+			} else {
+				var r = database["banwords"];
+				r.remByVal(msg);
+				database["banwords"] = r;
+				global.banwords[roomid] = r;
+			}
+			Storage.exportDatabase(room.id);
+			this.say("Banword removed.");
+			Client.send(room.id+"|/modnote BANWORD ("+msg+") removed by "+user.name);
+		}
+	},
 	
 
 
