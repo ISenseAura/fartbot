@@ -110,11 +110,11 @@ let commands = {
 				var roomid = res[0].toLowerCase().replace(/\s/g, '');
 				var roomobj = Rooms.rooms[roomid];
 				if (!user.hasRank(roomobj, '@') && !user.isDeveloper()) {this.say("Insufficient privileges."); return;}
-				global.topic[roomid] = "/adduhtml t, "+res[1]+"<style>";
+				global.topic[roomid] = "/adduhtml t, "+res[1];
 				this.say("Topic set in "+roomid+".");
 			}
 		} else {
-			global.topic[room.id] = "/adduhtml t, "+target+"<style>";
+			global.topic[room.id] = "/adduhtml t, "+target;
 			this.say("Topic set.");
 		}
 	},
@@ -444,7 +444,7 @@ let commands = {
 			html = html + '<details><summary>Ingredients</summary>';
 			html = html + ingredients;
 			if (!(room instanceof Users.User)) {
-				html = html + '</details></td></tr></tbody></table></div><style>'
+				html = html + '</details></td></tr></tbody></table></div>'
 				room.say(html, true);
 			} else {
 				html = html + '</details></td></tr></tbody></table>';
@@ -509,7 +509,7 @@ let commands = {
 			html = html + '<details><summary>Ingredients</summary>';
 			html = html + ingredients;
 			if (!(room instanceof Users.User)) {
-				html = html + '</details></td></tr></tbody></table></div><style>';
+				html = html + '</details></td></tr></tbody></table></div>';
 				room.say(html, true);
 			} else {
 				html = html + '</details></td></tr></tbody></table>';
@@ -517,7 +517,48 @@ let commands = {
 			}
 		});
 	},
-	
+
+	randathlete: function (target, room, user) {
+		if (room.id !== 'lobby' && room.id !== 'sports') return;
+		if (!user.hasRank(room, '+')) return;
+		function initialize() {
+
+			var nfl_teams = ["SF",  "CHI", "CIN", "BUF", "DEN", "CLE", "ARI", "LAC", "KC", "IND", "DAL", "MIA", "PHI", "ATL", "NYG", "JAC", "NYJ", "DET", "GB", "CAR", "MIN", "NEP", "OAK", "LAR", "BAL", "WAS", "NO", "SEA", "PIT", "TB", "HOU", "TEN"];
+			var team = nfl_teams[Math.floor(Math.random()*nfl_teams.length)];
+
+			// Setting URL and headers for request
+			var options = {
+				url: 'https://api.fantasydata.net/v3/nfl/stats/JSON/Players/'+team,
+  				headers: {
+    					'User-Agent': 'request',
+    					'Ocp-Apim-Subscription-Key': ''
+  				}
+			};
+			// Return new promise
+			return new Promise(function(resolve, reject) {
+  				// Do async job
+  				request.get(options, function(err, resp, body) {
+    					if (err) {
+      						reject(err);
+    					} else {
+      						resolve(JSON.parse(body));
+    					}
+  				});
+			});
+		}
+		initialize().then(function(data) {
+			var player = data[Math.floor(Math.random()*data.length)];
+			var name = player['Name'];
+			var team = player['CurrentTeam'];
+			var position = player['Position'];
+			var image = player['PhotoUrl'];
+			var html = '/adduhtml '+Math.random()+', <div class="infobox"><table><tbody><tr><td style="padding-right: 5px">';
+			html = html + '<img src="'+image+'" height="90" width="65"/></td><td>';
+			html = html + '<b>'+name+'</b> ('+team+'-'+position+')';
+			html = html + '</td></tr></tbody></table></div>';
+			room.say(html, true);
+		});
+	},
 
 
 };
