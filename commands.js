@@ -18,6 +18,7 @@ let overwriteWarnings = new Map();
 const juration = require('./lib/juration');
 const MINUTE = 60 * 1000;
 const DAY = 24 * 60 * MINUTE;
+const wtf = require('wtf_wikipedia');
 
 let repeatTimers = {};
 var first = true;
@@ -268,6 +269,41 @@ let commands = {
 			}
 		}
 	},
+	
+	wiki: function(target, room, user) {
+		if (room.id == 'help') return;
+		if (!(room instanceof Users.User) && !user.hasRank(room, '+') && !user.isDeveloper()) return;
+		(async () => {
+			var res = target.split(", ");
+			if (res[1] !== undefined) {
+				var doc = await wtf.fetch(res[0], res[1]);
+			}
+			else {
+				var doc = await wtf.fetch(target);
+			}
+			if (doc.sentences(1)) {
+				this.say(doc.sentences(0).text()+" "+doc.sentences(1).text()+" [[wiki:"+res[0]+"]]", true);
+			}
+		})();
+	},
+	
+	randwiki: function(target, room, user) {
+		if (room.id == 'help') return;
+                if (!(room instanceof Users.User) && !user.hasRank(room, '+') && !user.isDeveloper()) return;
+                (async () => {
+			if(target) {
+				var doc = await wtf.random(target);
+			} else {
+                        	var doc = await wtf.random("en");
+			}
+			if (doc.sentences(1)) {
+	                        this.say(doc.sentences(0).text()+" "+doc.sentences(1).text()+" [[wiki:"+doc.title()+"]]", true);
+			}
+                })();
+	},
+	
+	
+	
 
 
 };
