@@ -46,6 +46,14 @@ Customs.importDatabases();
 Storage.importDatabases();
 Storage.globalDatabase = Storage.getDatabase('global');
 
+global.banwords = {};
+global.banwords['lobby'] = Storage.getDatabase('lobby').banwords;
+global.banwords['dreamyard'] = Storage.getDatabase('dreamyard').banwords;
+global.banwords['scholastic'] = Storage.getDatabase('scholastic').banwords;
+global.banwords['thecafe'] = Storage.getDatabase('thecafe').banwords;
+global.banwords['sports'] = Storage.getDatabase('sports').banwords;
+global.banwords['help'] = Storage.getDatabase('help').banwords;
+
 let pluginsList;
 let plugins = fs.readdirSync('./plugins');
 for (let i = 0, len = plugins.length; i < len; i++) {
