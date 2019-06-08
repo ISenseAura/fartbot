@@ -392,6 +392,132 @@ let commands = {
 		}
 	},
 	
+	recipe: function (target, room, user) {
+		if (room.id == 'help') return;
+		if (!user.hasRank(room, '+') && !(room instanceof Users.User)) return;
+		target = target.replace(/å/g, 'a');target = target.replace(/ä/g, 'a');
+		function initialize() {
+			// Setting URL and headers for request
+			var options = {
+				url: 'https://api.edamam.com/search?q='+target+'&app_id=&app_key=&from=0&to=5',
+				headers: {
+					'User-Agent': 'request'
+				}
+			};
+			// Return new promise
+			return new Promise(function(resolve, reject) {
+				// Do async job
+				request.get(options, function(err, resp, body) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(JSON.parse(body));
+					}
+				});
+			});
+		}
+		initialize().then(function(data) {
+			var recipe = data.hits[Math.floor(Math.random() * data.hits.length)].recipe;
+			var image = recipe.image;
+			var url = recipe.url;
+			var title = recipe.label;
+			var labels = '';
+			var ingredients = '';
+			recipe.dietLabels.forEach(function(item){
+  				labels = labels + item + ', '
+			});
+			recipe.healthLabels.forEach(function(item){
+  				labels = labels + item + ', '
+			});
+			recipe.ingredientLines.forEach(function(item){
+  				ingredients = ingredients + '<br>' + item;
+			});
+			labels = labels.substring(0, labels.length-2);
+			if (!(room instanceof Users.User)) {
+				var html = '/adduhtml '+Math.random()+', <div class="infobox"><table><tbody><tr><td style="padding-right: 5px">';
+				html = html + '<img src="'+image+'" height="75" width="75"/></td><td>';
+				html = html + '<i>'+labels+'</i><br>'
+			} else {
+				var html = '/pminfobox '+user.id+',<table><tbody><tr><td style="padding-right: 5px">';
+			}
+			html = html + '<a href="'+recipe.url+'"><b>'+recipe.label+'</b> by '+recipe.source+'</a><br>';
+			html = html + '<details><summary>Ingredients</summary>';
+			html = html + ingredients;
+			if (!(room instanceof Users.User)) {
+				html = html + '</details></td></tr></tbody></table></div><style>'
+				room.say(html, true);
+			} else {
+				html = html + '</details></td></tr></tbody></table>';
+				Client.send('|'+html);
+			}
+		});
+	},
+	
+	randdish: "randrecipe",
+	randrecipe: function (target, room, user) {
+		if (room.id == 'help') return;
+		if (!user.hasRank(room, '+') && !(room instanceof Users.User)) return;
+		var myArray = ['chicken', 'steak', 'pork', 'fish', 'egg', 'tofu', 'artichoke', 'eggplant', 'asparagus', 'cabbage', 'broccoli', 'salad', 'parmesan', 'pizza', 'burger', 'spicy', 'potato', 'ham', 'cheese'];
+		var rand = myArray[Math.floor(Math.random() * myArray.length)];
+
+		function initialize() {
+			// Setting URL and headers for request
+			var options = {
+				url: 'https://api.edamam.com/search?q='+rand+'&app_id=&app_key=&from=0&to=5',
+				headers: {
+					'User-Agent': 'request'
+				}
+			};
+			// Return new promise
+			return new Promise(function(resolve, reject) {
+				// Do async job
+				request.get(options, function(err, resp, body) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(JSON.parse(body));
+					}
+				});
+			});
+		}
+
+		initialize().then(function(data) {
+			var recipe = data.hits[Math.floor(Math.random() * data.hits.length)].recipe;
+			var image = recipe.image;
+			var url = recipe.url;
+			var title = recipe.label;
+			var labels = '';
+			var ingredients = '';
+			recipe.dietLabels.forEach(function(item){
+  				labels = labels + item + ', '
+			});
+			recipe.healthLabels.forEach(function(item){
+  				labels = labels + item + ', '
+			});
+			recipe.ingredientLines.forEach(function(item){
+	  			ingredients = ingredients + '<br>' + item;
+			});
+			labels = labels.substring(0, labels.length-2);
+			if (!(room instanceof Users.User)) {
+				var html = '/adduhtml '+Math.random()+', <div class="infobox"><table><tbody><tr><td style="padding-right: 5px">';
+				html = html + '<img src="'+image+'" height="75" width="75"/></td><td>';
+				html = html + '<i>'+labels+'</i><br>'
+			} else {
+				var html = '/pminfobox '+user.id+',<table><tbody><tr><td style="padding-right: 5px">';
+			}
+			html = html + '<a href="'+recipe.url+'"><b>'+recipe.label+'</b> by '+recipe.source+'</a><br>';
+			html = html + '<details><summary>Ingredients</summary>';
+			html = html + ingredients;
+			if (!(room instanceof Users.User)) {
+				html = html + '</details></td></tr></tbody></table></div><style>';
+				room.say(html, true);
+			} else {
+				html = html + '</details></td></tr></tbody></table>';
+				Client.send('|'+html);
+			}
+		});
+	},
+	
 
 
 };
