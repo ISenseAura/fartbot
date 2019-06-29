@@ -553,6 +553,13 @@ class MessageParser {
 			punishments.push({action: 'ban', rule: 'filter', reason: 'filter evasion'});
 		}
 		
+		var regex1 = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?((\/.{200,500})$)/g
+		var found = message.match(regex1);
+		if ((found !== null)) {
+			Client.send(room.id + '|/hidetext ' + user.id);
+			Client.send(room.id + '|' + user.name + ', please use a shorter link.');
+		}
+		
 		if (global.banwords[room.id]) {
 			var str = message.split(' ').join('').replace(/[.]/g, '');
 			str = str.toLowerCase().replace('niger', ''); // avoid false positives
