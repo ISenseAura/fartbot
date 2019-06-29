@@ -280,6 +280,12 @@ class Tools {
 				}
 			}
 		}
+		// Remove the rank character
+		var zn = text.replace(/^./, ' ');
+		// Search for and remove all characters after @ (the status)
+		var n = zn.indexOf('@');
+		text = text.substring(0, n != -1 ? n : text.length);
+		// Convert to alphanumerical id
 		return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 	}
 
@@ -302,6 +308,9 @@ class Tools {
 			}
 		}
 		if (Config.groups && text.charAt(0) in Config.groups) text = text.substr(1);
+		// Crop out the status (which occurs after @)
+		var n = text.indexOf('@');
+		text = text.substring(0, n != -1 ? n : text.length);
 		return text.trim();
 	}
 
