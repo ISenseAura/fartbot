@@ -198,6 +198,10 @@ class MessageParser {
 			if (splitMessage[0] === '0') return;
 			let users = splitMessage[0].split(",");
 			for (let i = 1, len = users.length; i < len; i++) {
+				var zn = users[i].replace(/^./, '');
+				var n = zn.indexOf('@');
+				var text = zn.substring(0, n != -1 ? n : users[i].length);
+				splitMessage[0] = users[i][0] + text;
 				let user = Users.add(users[i].substr(1));
 				let rank = users[i].charAt(0);
 				if (room.id === 'lobby') {
@@ -289,6 +293,10 @@ class MessageParser {
 		}
 		case 'J':
 		case 'j': {
+			var zn = splitMessage[0].replace(/^./, '');
+			var n = zn.indexOf('@');
+			var text = zn.substring(0, n != -1 ? n : splitMessage[0].length);
+			splitMessage[0] = splitMessage[0][0] + text;
 			let user = Users.add(splitMessage[0]);
 			if (!user) return;
 			room.onJoin(user, splitMessage[0].charAt(0));
@@ -304,6 +312,10 @@ class MessageParser {
 		}
 		case 'L':
 		case 'l': {
+			var zn = splitMessage[0].replace(/^./, '');
+			var n = zn.indexOf('@');
+			var text = zn.substring(0, n != -1 ? n : splitMessage[0].length);
+			splitMessage[0] = splitMessage[0][0] + text;
 			let user = Users.add(splitMessage[0]);
 			if (!user) return;
 			room.onLeave(user);
@@ -311,8 +323,12 @@ class MessageParser {
 		}
 		case 'N':
 		case 'n': {
-			let user = Users.add(splitMessage[1]);
+			let user = Users.add(splitMessage[1].split('@')[0]);
 			if (!user) return;
+			var zn = splitMessage[0].replace(/^./, '');
+			var n = zn.indexOf('@');
+			var text = zn.substring(0, n != -1 ? n : splitMessage[0].length);
+			splitMessage[0] = splitMessage[0][0] + text;
 			room.onRename(user, splitMessage[0]);
 			if (Storage.globalDatabase.mail && user.id in Storage.globalDatabase.mail) {
 				let mail = Storage.globalDatabase.mail[user.id];
