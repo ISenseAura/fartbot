@@ -193,7 +193,7 @@ let commands = {
 				"/wall Which Pokémon city or town would you want to live and why?",
 			];
 		}
-			var rand = questions[Math.floor(Math.random() * questions.length)];
+			var rand = Tools.sampleOne(questions);
 			this.say(rand);
 	},
 	
@@ -417,7 +417,7 @@ let commands = {
 			});
 		}
 		initialize().then(function(data) {
-			var recipe = data.hits[Math.floor(Math.random() * data.hits.length)].recipe;
+			var recipe = Tools.sampleOne(data.hits).recipe;
 			var image = recipe.image;
 			var url = recipe.url;
 			var title = recipe.label;
@@ -458,7 +458,7 @@ let commands = {
 		if (room.id == 'help') return;
 		if (!user.hasRank(room, '+') && !(room instanceof Users.User)) return;
 		var myArray = ['chicken', 'steak', 'pork', 'fish', 'egg', 'tofu', 'artichoke', 'eggplant', 'asparagus', 'cabbage', 'broccoli', 'salad', 'parmesan', 'pizza', 'burger', 'spicy', 'potato', 'ham', 'cheese'];
-		var rand = myArray[Math.floor(Math.random() * myArray.length)];
+		var rand = Tools.sampleOne(myArray);
 
 		function initialize() {
 			// Setting URL and headers for request
@@ -482,7 +482,7 @@ let commands = {
 		}
 
 		initialize().then(function(data) {
-			var recipe = data.hits[Math.floor(Math.random() * data.hits.length)].recipe;
+			var recipe = Tools.sampleOne(data.hits).recipe;
 			var image = recipe.image;
 			var url = recipe.url;
 			var title = recipe.label;
@@ -524,7 +524,7 @@ let commands = {
 		function initialize() {
 
 			var nfl_teams = ["SF",  "CHI", "CIN", "BUF", "DEN", "CLE", "ARI", "LAC", "KC", "IND", "DAL", "MIA", "PHI", "ATL", "NYG", "JAC", "NYJ", "DET", "GB", "CAR", "MIN", "NEP", "OAK", "LAR", "BAL", "WAS", "NO", "SEA", "PIT", "TB", "HOU", "TEN"];
-			var team = nfl_teams[Math.floor(Math.random()*nfl_teams.length)];
+			var team = Tools.sampleOne(nfl_teams);
 
 			// Setting URL and headers for request
 			var options = {
@@ -547,7 +547,7 @@ let commands = {
 			});
 		}
 		initialize().then(function(data) {
-			var player = data[Math.floor(Math.random()*data.length)];
+			var player = Tools.sampleOne(data);
 			var name = player['Name'];
 			var team = player['CurrentTeam'];
 			var position = player['Position'];
