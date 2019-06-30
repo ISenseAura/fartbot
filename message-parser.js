@@ -351,6 +351,12 @@ class MessageParser {
 			} else { user.away = false;}
 			user.status = status;
 			splitMessage[0] = splitMessage[0][0] + text;
+			if (!user.alts.includes(Tools.toId(splitMessage[0]))) {
+				user.alts.push(Tools.toId(splitMessage[0]));
+			}
+			if (!user.alts.includes(Tools.toId(splitMessage[1]))) {
+				user.alts.push(Tools.toId(splitMessage[1]));
+			}
 			room.onRename(user, splitMessage[0]);
 			if (Storage.globalDatabase.mail && user.id in Storage.globalDatabase.mail) {
 				let mail = Storage.globalDatabase.mail[user.id];
