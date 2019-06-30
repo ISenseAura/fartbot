@@ -19,6 +19,10 @@ class User {
 	constructor(name, id) {
 		this.name = Tools.toName(name);
 		this.id = id;
+		this.alts = [];
+		this.away = false;
+		this.status = "";
+		this.globalRank = " ";
 		/**@type {Map<Room, string>} */
 		this.rooms = new Map();
 		/**@type {Map<Room, {messages: Array<{time: number, message: string}>, points: number, lastAction: number}>} */
