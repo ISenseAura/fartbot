@@ -293,12 +293,21 @@ class MessageParser {
 		}
 		case 'J':
 		case 'j': {
+			// remove first character (so that we don't get false positives for Moderators)
 			var zn = splitMessage[0].replace(/^./, '');
+			// search for the @ character and delete the status that comes after
 			var n = zn.indexOf('@');
 			var text = zn.substring(0, n != -1 ? n : splitMessage[0].length);
 			splitMessage[0] = splitMessage[0][0] + text;
 			let user = Users.add(splitMessage[0]);
 			if (!user) return;
+			// get the status from what comes after the @
+			var status = zn.substring(n != -1 ? n + 1 : zn.length, zn.length);
+			if (status.charAt(0) === '!') {
+				user.away = true;
+				status = status.substr(1);
+			} else { user.away = false;}
+			user.status = status;
 			room.onJoin(user, splitMessage[0].charAt(0));
 			if (Storage.globalDatabase.mail && user.id in Storage.globalDatabase.mail) {
 				let mail = Storage.globalDatabase.mail[user.id];
@@ -318,6 +327,13 @@ class MessageParser {
 			splitMessage[0] = splitMessage[0][0] + text;
 			let user = Users.add(splitMessage[0]);
 			if (!user) return;
+			// get the status from what comes after the @
+			var status = zn.substring(n != -1 ? n + 1 : zn.length, zn.length);
+			if (status.charAt(0) === '!') {
+				user.away = true;
+				status = status.substr(1);
+			} else { user.away = false;}
+			user.status = status;
 			room.onLeave(user);
 			break;
 		}
@@ -328,6 +344,12 @@ class MessageParser {
 			var zn = splitMessage[0].replace(/^./, '');
 			var n = zn.indexOf('@');
 			var text = zn.substring(0, n != -1 ? n : splitMessage[0].length);
+			var status = zn.substring(n != -1 ? n + 1 : zn.length, zn.length);
+			if (status.charAt(0) === '!') {
+				user.away = true;
+				status = status.substr(1);
+			} else { user.away = false;}
+			user.status = status;
 			splitMessage[0] = splitMessage[0][0] + text;
 			room.onRename(user, splitMessage[0]);
 			if (Storage.globalDatabase.mail && user.id in Storage.globalDatabase.mail) {
